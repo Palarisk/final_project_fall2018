@@ -14,3 +14,57 @@ let svg = d3
   .attr('width', width + margin.left + margin.right)
   .append('g')
   .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+
+let projection = d3
+  .geoMercator()
+  .translate([width / 2, height / 2])
+  .scale(110)
+let graticule = d3.geoGraticule()
+
+// out geoPath needs a PROJECTION variable
+let path = d3.geoPath().projection(projection)
+
+var colorScale = d3.scaleSequential(d3.interpolateOrRd)
+
+Promise.all([
+  d3.json(require('./data/world.topojson')),
+  d3.csv(require('./data/gift_2017.csv'))
+])
+  .then(ready)
+  .catch(err => console.log('Failed on', err))
+
+function ready([json, gifts]) {
+  // console.log(json.objects)
+  let countries = topojson.feature(json, json.objects.countries)
+  // // console.log(countries)
+  // console.log(gifts)
+  colorScale.domain([0, 30000000])
+
+  var amountByName = {}
+
+  gifts.forEach(function(d) {
+    amountByName[d.name] = +d.amount
+  })
+  console.log(amountByName)
+  svg
+    .selectAll('.country')
+    .data(countries.features)
+    .enter()
+    .append('path')
+    .attr('class', 'country')
+    .attr('d', path)
+    .attr('fill', function(d) {
+      return colorScale(amountByName[d.properties.name])
+    })
+  // console.log(countries.features)
+
+  // console.log(graticule())
+
+  svg
+    .append('path')
+    .datum(graticule())
+    .attr('d', path)
+    .attr('stroke', 'white')
+    .attr('stroke-width', 5)
+    .lower()
+}
