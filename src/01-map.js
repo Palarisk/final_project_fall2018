@@ -2,7 +2,7 @@ import * as d3 from 'd3'
 
 // Set up margin/height/width
 
-var margin = { top: 100, left: 80, right: 105, bottom: 80 }
+var margin = { top: 100, left: 100, right: 105, bottom: 80 }
 
 var height = 700 - margin.top - margin.bottom
 
@@ -74,8 +74,8 @@ function ready(datapoints) {
 
   // Get a list of dates and a list of prices
 
-  let years = datapoints.map(d => +d.datetime)
-
+  let years = datapoints.map(d => d.datetime)
+  console.log(d3.extent(years))
   let gifts = datapoints.map(d => +d.GiftAmount)
 
   xPositionScale.domain(d3.extent(years))
@@ -89,8 +89,7 @@ function ready(datapoints) {
     .key(d => d.Country)
     .entries(datapoints)
 
-  // console.log(nested)
-
+  console.log(nested)
 
   // Draw your lines
 
@@ -127,7 +126,7 @@ function ready(datapoints) {
     .attr('r', 3)
     .attr('cx', width)
     .attr('cy', function(d) {
-     // console.log(d.values[5])
+      // console.log(d.values[5])
       return yPositionScale(d.values[5].GiftAmount)
     })
     .attr('fill', d => colorScale(d.key))
@@ -169,18 +168,19 @@ function ready(datapoints) {
     .attr('text-anchor', 'middle')
     .attr('font-size', 30)
 
-
   svg
     .append('text')
-    .text('The top 10 countries with the biggest total sum of donations in 2012-2017')
+    .text(
+      'The top 10 countries with the biggest total sum of donations in 2012-2017'
+    )
     .attr('x', width / 2)
     .attr('y', -20)
     .attr('text-anchor', 'middle')
     .attr('font-size', 16)
 
-//Bermuda-point
+  // Bermuda-point
 
-svg
+  svg
     .selectAll('.bermuda-circle')
     .data(nested)
     .enter()
@@ -188,38 +188,37 @@ svg
     .attr('class', 'bermuda-circle')
     // .attr('class', 'last-circle')
     .attr('r', 8)
-    .attr('cx', function(d){
+    .attr('cx', function(d) {
       return xPositionScale(d.values[4].datetime)
     })
     .attr('cy', function(d) {
-   
       return yPositionScale(d.values[4].GiftAmount)
     })
     .attr('fill', d => colorScale(d.key))
-    .attr('visibility', function(d){
-     if (d.key === 'BERMUDA') {
+    .attr('visibility', function(d) {
+      if (d.key === 'BERMUDA') {
         return 'visible'
       }
       return 'hidden'
     })
-    .on('mouseover', function (d) {
-        console.log("I got clicked")
+    .on('mouseover', function(d) {
+      console.log('I got clicked')
 
       d3.select('#info_bermuda').style('display', 'block')
       d3.select('.bermuda-circle')
-        .attr('r',10)
-        .attr('stroke','black')
+        .attr('r', 10)
+        .attr('stroke', 'black')
     })
     .on('mouseout', function(d) {
       d3.select('#info_bermuda').style('display', 'none')
       d3.select('.bermuda-circle')
-        .attr('r',8)
-        .attr('stroke','none')
-})
+        .attr('r', 8)
+        .attr('stroke', 'none')
+    })
 
-//QATAR-point
+  // QATAR-point
 
-svg
+  svg
     .selectAll('.qatar-circle')
     .data(nested)
     .enter()
@@ -227,39 +226,38 @@ svg
     .attr('class', 'qatar-circle')
     // .attr('class', 'last-circle')
     .attr('r', 8)
-    .attr('cx', function(d){
+    .attr('cx', function(d) {
       return xPositionScale(d.values[4].datetime)
     })
     .attr('cy', function(d) {
-  
       return yPositionScale(d.values[4].GiftAmount)
     })
     .attr('fill', d => colorScale(d.key))
-    .attr('visibility', function(d){
-     if (d.key === 'QATAR') {
+    .attr('visibility', function(d) {
+      if (d.key === 'QATAR') {
         return 'visible'
       }
       return 'hidden'
     })
-    .on('mouseover', function (d) {
-        console.log("I got clicked")
+     
+    .on('mouseover', function(d) {
+      console.log('I got clicked')
 
       d3.select('#info_qatar').style('display', 'block')
       d3.select('.qatar-circle')
-        .attr('r',10)
-        .attr('stroke','black')
+        .attr('r', 10)
+        .attr('stroke', 'black')
     })
     .on('mouseout', function(d) {
       d3.select('#info_qatar').style('display', 'none')
       d3.select('.qatar-circle')
-        .attr('r',8)
-        .attr('stroke','none')
-})
+        .attr('r', 8)
+        .attr('stroke', 'none')
+    })
 
+  // ENGLAND-point
 
-    //ENGLAND-point
-
-svg
+  svg
     .selectAll('.england-circle')
     .data(nested)
     .enter()
@@ -269,55 +267,59 @@ svg
     })
     // .attr('class', 'last-circle')
     .attr('r', 8)
-    .attr('cx', function(d){
+    .attr('cx', function(d) {
       return xPositionScale(d.values[3].datetime)
     })
     .attr('cy', function(d) {
-
       return yPositionScale(d.values[3].GiftAmount)
     })
     .attr('fill', d => colorScale(d.key))
-    .attr('visibility', function(d){
-     if (d.key === 'ENGLAND') {
+    .attr('visibility', function(d) {
+      if (d.key === 'ENGLAND') {
         return 'visible'
       }
       return 'hidden'
     })
-        .on('mouseover', function (d) {
-        console.log("I got clicked")
+    .on('mouseover', function(d) {
+      console.log('I got clicked')
 
       d3.select('#info_england').style('display', 'block')
-      d3.select('.qatar-circle')
-        .attr('r',10)
-        .attr('stroke','black')
+      d3.select('.england-circle')
+        .attr('r', 10)
+        .attr('stroke', 'black')
     })
     .on('mouseout', function(d) {
       d3.select('#info_england').style('display', 'none')
-            d3.select('.england-circle')
-        .attr('r',8)
-        .attr('stroke','none')
-})
-
-
+      d3.select('.england-circle')
+        .attr('r', 8)
+        .attr('stroke', 'none')
+    })
 
   // Add your axes
 
   var xAxis = d3
-    .axisBottom(xPositionScale)
-    .tickFormat(d3.timeFormat('%m-%Y'))
-   // .ticks(d3.timeYear.every(2))
-  // var xAxis = d3.axisBottom(xPositionScale).ticks(d3.timeYear)
+  .axisBottom(xPositionScale)
+  .tickFormat(d3.timeFormat('%Y'))
+  .tickValues([new Date("2012"), new Date("2013"), new Date("2014"),
+    new Date("2015"),new Date("2016"), new Date("2017")])
+
 
   svg
     .append('g')
     .attr('class', 'axis x-axis')
     .attr('transform', 'translate(0,' + height + ')')
     .call(xAxis)
-  //  .call(xAxis.ticks(d3.timeYear))
+  // .call(xAxis.ticks(d3.timeYear))
 
-
-//console.log(xPositionScale.domain())
+  // console.log(xPositionScale.domain())
   var yAxis = d3.axisLeft(yPositionScale)
+ .ticks(7)
+  .tickFormat(function(d){
+    console.log(d)
+  
+    return d/1000000 + ' millions' 
+  
+  })
 
   svg
     .append('g')

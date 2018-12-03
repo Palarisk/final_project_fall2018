@@ -12,13 +12,6 @@ var container = d3.select('#chart-3')
 
 // Create your scales
 
-  var yPositionScale = d3.scaleBand().domain([2012, 2017]).range([height, 0])
-  var widthScale = d3
-    .scaleLinear()
-    .domain([0, 200000000])
-    .range([0, width])
-
-/*
 var xPositionScale = d3
   .scaleLinear()
   .domain([2012, 2017])
@@ -38,7 +31,7 @@ var line = d3
   .y(function(d) {
     return yPositionScale(d.GiftAmount)
   })
-*/
+
 // Read in your data
 
 Promise.all([
@@ -76,27 +69,13 @@ function ready([datapoints]) {
     .each(function(d) {
       // which svg are we looking at?
       var svg = d3.select(this)
-console.log(nested)
+
       svg
-        .selectAll('rect')
-        .data(nested)
-        .enter()
-        .append('rect')
+        .append('path')
+        .datum(d.values)
+        .attr('d', line)
         .attr('stroke', '#9e4b6c')
         .attr('fill', 'none')
-        .attr('x', 0)
-      .attr('y', function(d) {
-        return yPositionScale(d.values)
-      })
-      .attr('width', function(d) {
-        return widthScale(d.values)
-      })
-      .attr('height', yPositionScale.bandwidth())
-      /*
-      .attr('fill', function(d) {
-        return colorScale(d['animal'])
-      })
-      */
 /*
        svg
         .append('path')
