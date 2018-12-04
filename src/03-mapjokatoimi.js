@@ -1,10 +1,3 @@
-   .key(function(d) {
-      if (d.Country !== 'BERMUDA') {
-      return d.Country
-    }
-    })
-
-***
 import * as d3 from 'd3'
 
 // Create your margins and height/width
@@ -20,19 +13,13 @@ var container = d3.select('#chart-3')
 // Create your scales
 
 var xPositionScale = d3
-  .scaleBand()
+  .scaleLinear()
   .domain([2012, 2017])
   .range([0, width])
-
 var yPositionScale = d3
   .scaleLinear()
   .domain([0, 200000000])
   .range([height, 0])
-
-  var heightScale = d3
-    .scaleLinear()
-    .domain([0, 200000000])
-    .range([0, height])
 
 // Create your line generator
 
@@ -44,8 +31,6 @@ var line = d3
   .y(function(d) {
     return yPositionScale(d.GiftAmount)
   })
-
-
 
 // Read in your data
 
@@ -85,36 +70,6 @@ function ready([datapoints]) {
       // which svg are we looking at?
       var svg = d3.select(this)
 
-console.log(nested)
-
-      svg
-  
-      .append('rect')
-      .data(d.values)
-      .attr('y',
-       function(d) {
-        return height - heightScale(d.GiftAmount)
-      })
-      
-      .attr('x',
-        function(d) {
-        return xPositionScale(d['year'])
-
-        
-      })
-     
-      .attr('height', function(d) {
-        return heightScale(d['GiftAmount'])
-      })
-      
-      .attr('width', xPositionScale.bandwidth())
-       
-      .attr('fill', 'red')
-
-        /* function(d) {
-        return colorScale(d['animal'])
-      })
-*/
       svg
         .append('path')
         .datum(d.values)
@@ -140,7 +95,7 @@ console.log(nested)
 
       var xAxis = d3
         .axisBottom(xPositionScale)
-        .ticks(6)
+        .ticks(4)
         .tickFormat(d3.format('d'))
         .tickSize(-height)
 

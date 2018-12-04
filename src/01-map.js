@@ -56,7 +56,7 @@ var line = d3
 
 // Read in your housing price data
 
-d3.csv(require('./data/gift_data_2012_2017.csv'))
+d3.csv(require('./data/gift_data_top5_2012_2017.csv'))
   .then(ready)
   .catch(err => {
     //  console.log("The error is", err)
@@ -152,7 +152,10 @@ function ready(datapoints) {
     .attr('font-size', 12)
     .attr('dx', 5)
     .attr('dy', function(d) {
-      if (d.key === 'West North Central') {
+      if (d.key === 'CHINA') {
+        return -2
+      }
+      if (d.key === 'SAUDI ARABIA') {
         return 6
       }
       return 3
@@ -171,7 +174,7 @@ function ready(datapoints) {
   svg
     .append('text')
     .text(
-      'The top 10 countries with the biggest total sum of donations in 2012-2017'
+      'The top 5 countries with the biggest total sum of donations in 2012-2017'
     )
     .attr('x', width / 2)
     .attr('y', -20)
@@ -216,8 +219,7 @@ function ready(datapoints) {
         .attr('stroke', 'none')
     })
 
-  // QATAR-point
-
+//QATAR-point 
   svg
     .selectAll('.qatar-circle')
     .data(nested)
@@ -239,21 +241,21 @@ function ready(datapoints) {
       }
       return 'hidden'
     })
-     
     .on('mouseover', function(d) {
       console.log('I got clicked')
 
       d3.select('#info_qatar').style('display', 'block')
-      d3.select('.qatar-circle')
+      d3.select(this)
         .attr('r', 10)
         .attr('stroke', 'black')
     })
     .on('mouseout', function(d) {
       d3.select('#info_qatar').style('display', 'none')
-      d3.select('.qatar-circle')
+      d3.select(this)
         .attr('r', 8)
         .attr('stroke', 'none')
     })
+
 
   // ENGLAND-point
 
@@ -284,13 +286,13 @@ function ready(datapoints) {
       console.log('I got clicked')
 
       d3.select('#info_england').style('display', 'block')
-      d3.select('.england-circle')
+      d3.select(this)
         .attr('r', 10)
         .attr('stroke', 'black')
     })
     .on('mouseout', function(d) {
       d3.select('#info_england').style('display', 'none')
-      d3.select('.england-circle')
+      d3.select(this)
         .attr('r', 8)
         .attr('stroke', 'none')
     })
