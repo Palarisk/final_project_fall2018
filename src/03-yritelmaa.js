@@ -1,49 +1,38 @@
+   .key(function(d) {
+      if (d.Country !== 'BERMUDA') {
+      return d.Country
+    }
+    })
+
+***
 import * as d3 from 'd3'
 
 // Create your margins and height/width
-var margin = { top: 250, left: 65, right: 30, bottom: 30 }
+var margin = { top: 100, left: 40, right: 30, bottom: 30 }
 
-var height = 500 - margin.top - margin.bottom
+var height = 300 - margin.top - margin.bottom
 
-var width = 300 - margin.left - margin.right
+var width = 200 - margin.left - margin.right
 
 // I'll give you this part!
 var container = d3.select('#chart-3')
 
 // Create your scales
 
-  var xPositionScale = d3.scaleBand()
-  //.domain([2012, 2013, 2014, 2015, 2016, 2017])
-  .range([0, width])
-
-  var heightScale = d3
-    .scaleLinear()
-    .domain([0, 300000000])
-    .range([height, 0])
-
-/*
-  var bar = d3
-  .rect()
-  .attr('fill', 'black')
-      .attr('x', 0)
-      .attr('y', function(d) {
-        return yPositionScale(d.Year)
-      })
-      .attr('width', function(d) {
-        return widthScale(d.GiftAmount)
-      })
-      .attr('height', yPositionScale.bandwidth())
-
-*/
-/*
 var xPositionScale = d3
-  .scaleLinear()
+  .scaleBand()
   .domain([2012, 2017])
   .range([0, width])
+
 var yPositionScale = d3
   .scaleLinear()
   .domain([0, 200000000])
   .range([height, 0])
+
+  var heightScale = d3
+    .scaleLinear()
+    .domain([0, 200000000])
+    .range([0, height])
 
 // Create your line generator
 
@@ -55,7 +44,9 @@ var line = d3
   .y(function(d) {
     return yPositionScale(d.GiftAmount)
   })
-*/
+
+
+
 // Read in your data
 
 Promise.all([
@@ -69,11 +60,6 @@ Promise.all([
 // Create your ready function
 
 function ready([datapoints]) {
-  
-
-  var years = datapoints.map(d => d.year)
-  xPositionScale.domain(years)
-
   var nested = d3
     .nest()
     .key(function(d) {
@@ -98,38 +84,43 @@ function ready([datapoints]) {
     .each(function(d) {
       // which svg are we looking at?
       var svg = d3.select(this)
-//console.log(nested)
+
+console.log(nested)
 
       svg
-        .selectAll('.bar')
-   
-        .data(function(d) {
-          return d.values})
-        .enter()
-        .append('rect')
-        .attr('class','bar')
-        .attr('fill', 'salmon')
-        .attr('y', height )
-        .attr('y',function(d,i) {
-        return heightScale(d.GiftAmount)
-      })
-      .attr('x', function(d,i) {
-      //  console.log(d.values)
-      // console.log(d.Year)
-        return xPositionScale(d.year)
-      })
-      .attr('height', function(d,i) {
-       // console.log(nested)
+  
+      .append('rect')
+      .data(d.values)
+      .attr('y',
+       function(d) {
         return height - heightScale(d.GiftAmount)
       })
-      .attr('width', xPositionScale.bandwidth())
-
       
-      /*
-      .attr('fill', function(d) {
+      .attr('x',
+        function(d) {
+        return xPositionScale(d['year'])
+
+        
+      })
+     
+      .attr('height', function(d) {
+        return heightScale(d['GiftAmount'])
+      })
+      
+      .attr('width', xPositionScale.bandwidth())
+       
+      .attr('fill', 'red')
+
+        /* function(d) {
         return colorScale(d['animal'])
       })
-      */
+*/
+      svg
+        .append('path')
+        .datum(d.values)
+        .attr('d', line)
+        .attr('stroke', '#9e4b6c')
+        .attr('fill', 'none')
 /*
        svg
         .append('path')
@@ -139,40 +130,31 @@ function ready([datapoints]) {
         .attr('fill', 'none')
 */
 
- var ticks = [50000000,100000000,150000000,200000000,250000000,300000000]
- var tickLabels = [50,100,150,200,250,300]
+       svg
+        .append('text')
+        .text('USA')
+        .attr('x', 15)
+        .attr('y', 23)
+        .attr('font-size', 9)
+        .attr('stroke', 'grey')
 
-      var yAxis = d3
-        .axisLeft(heightScale)
-        .tickValues(ticks)
-        .tickFormat(function(d,i){
-if (+d === 300000000) {
-        return tickLabels[i] + " millions"
-      } else {
-        return tickLabels[i]
-      }
-
-        })
-
-
-        //.ticks(4)
-        //.tickFormat(d3.format(d/1000000))
-        
-        //.tickSize(-height)
-
-    var xAxis = d3
+      var xAxis = d3
         .axisBottom(xPositionScale)
+        .ticks(6)
+        .tickFormat(d3.format('d'))
+        .tickSize(-height)
+
       svg
         .append('g')
         .attr('class', 'axis x-axis')
         .attr('transform', 'translate(0,' + height + ')')
         .call(xAxis)
 
-  
-        //.tickValues([2012, 2013, 2014, 2015, 2016, 2017])
-        //.tickSize(-width)
-        //.ticks(6)
-        //.tickFormat(d3.format("$,d"))
+      var yAxis = d3
+        .axisLeft(yPositionScale)
+        //.tickValues([5000, 10000, 15000, 20000])
+        .tickSize(-width)
+        .tickFormat(d3.format("$,d"))
 
 
       svg
@@ -193,17 +175,12 @@ if (+d === 300000000) {
         .attr('x', width / 2)
         .attr('y', 0)
         .attr('font-size', 12)
-        .attr('dy', -22)
+        .attr('dy', -12)
         .attr('text-anchor', 'middle')
-        .attr('fill', 'red')
+        .attr('fill', '#9e4b6c')
         .attr('font-weight', 'bold')
-        //console.log(d.values[0].GiftAmount)
-
-
-      
-
-
+        console.log(d.key)
     })
 }
 
-//export { xPositionScale, yPositionScale, line, width, height }
+export { xPositionScale, yPositionScale, line, width, height }
