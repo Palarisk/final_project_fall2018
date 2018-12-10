@@ -3,9 +3,9 @@ import * as topojson from 'topojson'
 
 let margin = { top: 0, left: 20, right: 20, bottom: 0 }
 
-let height = 400 - margin.top - margin.bottom
+let height = 600 - margin.top - margin.bottom
 
-let width = 700 - margin.left - margin.right
+let width = 800 - margin.left - margin.right
 
 let svg = d3
   .select('#chart-2')
@@ -15,10 +15,12 @@ let svg = d3
   .append('g')
   .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 
-let projection = d3
-  .geoMercator()
-  .translate([width / 2, height / 2])
-  .scale(110)
+let projection = d3.geoNaturalEarth1()
+// .rotate(rotate)
+// .fitExtent([[1, 1], [width - 1, height - 1]], sphere)
+// .precision(0.1)
+// .translate([width / 2, height / 2])
+// .scale(110)
 let graticule = d3.geoGraticule()
 
 // out geoPath needs a PROJECTION variable
@@ -39,13 +41,22 @@ function ready([json, gifts]) {
   // // console.log(countries)
   // console.log(gifts)
   colorScale.domain([0, 30000000])
-
+  projection.fitSize([width, height], countries)
   var amountByName = {}
 
   gifts.forEach(function(d) {
     amountByName[d.name] = +d.amount
   })
   console.log(amountByName)
+
+  svg
+    .append('g')
+    .attr('class', 'ocean')
+    .append('path')
+    .datum({ type: 'Sphere' })
+    .attr('d', path)
+    .attr('fill', '#c3e4ff')
+
   svg
     .selectAll('.country')
     .data(countries.features)
@@ -54,6 +65,10 @@ function ready([json, gifts]) {
     .attr('class', 'country')
     .attr('d', path)
     .attr('fill', function(d) {
+      if (!amountByName[d.properties.name]) {
+        console.log(d.properties.name, 'has no data')
+        return colorScale(0)
+      }
       return colorScale(amountByName[d.properties.name])
     })
   // console.log(countries.features)
