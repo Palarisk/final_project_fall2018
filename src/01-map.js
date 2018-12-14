@@ -69,17 +69,14 @@ function ready(datapoints) {
   // Convert your months to dates
 
   datapoints.forEach(d => {
-    d.datetime = parseTime(d.year)
+    d.datetime = +d.year
   })
 
   // Get a list of dates and a list of prices
 
   let years = datapoints.map(d => d.datetime)
-  console.log(d3.extent(years))
   let gifts = datapoints.map(d => +d.GiftAmount)
-
   xPositionScale.domain(d3.extent(years))
-
   yPositionScale.domain(d3.extent(gifts))
 
   // Group your data together
@@ -301,9 +298,8 @@ function ready(datapoints) {
 
   var xAxis = d3
   .axisBottom(xPositionScale)
-  .tickFormat(d3.timeFormat('%Y'))
-  .tickValues([new Date("2012"), new Date("2013"), new Date("2014"),
-    new Date("2015"),new Date("2016"), new Date("2017")])
+  .tickValues(d3.range(2012,2017.1))
+  .tickFormat(d=>d)
 
 
   svg
@@ -318,9 +314,11 @@ function ready(datapoints) {
  .ticks(7)
   .tickFormat(function(d){
     console.log(d)
-  
+       if (+d === 700000000) {
     return d/1000000 + ' millions' 
-  
+   } else {
+        return d/1000000
+      }
   })
 
   svg
