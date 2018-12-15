@@ -28,6 +28,8 @@ let path = d3.geoPath().projection(projection)
 
 var colorScale = d3.scaleSequential(d3.interpolateOrRd)
 
+// Define the div for the tooltip
+
 Promise.all([
   d3.json(require('./data/world.topojson')),
   d3.csv(require('./data/gift_2017.csv'))
@@ -42,12 +44,20 @@ function ready([json, gifts]) {
   // console.log(gifts)
   colorScale.domain([0, 30000000])
   projection.fitSize([width, height], countries)
+
   var amountByName = {}
 
   gifts.forEach(function(d) {
     amountByName[d.name] = +d.amount
   })
-  console.log(amountByName)
+  // console.log(amountByName)
+
+  var div = d3
+    .select('body')
+    .append('div')
+    .attr('class', 'tooltip')
+
+  // console.log(div)
 
   svg
     .append('g')
@@ -66,11 +76,50 @@ function ready([json, gifts]) {
     .attr('d', path)
     .attr('fill', function(d) {
       if (!amountByName[d.properties.name]) {
-        console.log(d.properties.name, 'has no data')
+        // console.log(d.properties.name, 'has no data')
         return colorScale(0)
       }
       return colorScale(amountByName[d.properties.name])
     })
+    .on('mouseover', function(d) {
+      console.log('I got clicked')
+
+      div
+        .transition()
+        .duration(100)
+        .style('opacity', 0.9)
+
+      var countryName = d.properties.name
+      var donnerAmount = gifts.filter(d => {
+        return d.name === countryName
+      })[0].amount
+
+      d3.selectAll('.tooltip')
+        .html(
+          'Country' +
+            ':' +
+            countryName +
+            '</br>' +
+            'Amount' +
+            ':' +
+            '$' +
+            donnerAmount
+        )
+        .style('left', d3.event.pageX + 'px')
+        .style('top', d3.event.pageY - 28 + 'px')
+        .style('background-color', 'white')
+        .style('text-align', 'middle')
+
+      // console.log(donnerAmount)
+      // console.log(d.properties.name)
+    })
+    .on('mouseout', function(d) {
+      div
+        .transition()
+        .duration(500)
+        .style('opacity', 0)
+    })
+
   // console.log(countries.features)
 
   // console.log(graticule())
@@ -79,7 +128,7 @@ function ready([json, gifts]) {
     .append('path')
     .datum(graticule())
     .attr('d', path)
-    .attr('stroke', 'white')
-    .attr('stroke-width', 5)
+    .attr('stroke', 'lightgray')
+    // .attr('stroke-width', 5)
     .lower()
 }
