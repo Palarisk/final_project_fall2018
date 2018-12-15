@@ -89,7 +89,11 @@ function ready(datapoints) {
   console.log(nested)
 
   // Draw your lines
-
+  /*
+  d3.select('#usual').on('stepin', () => {
+ 
+    
+*/
   svg
     .selectAll('.price-line')
     .data(nested)
@@ -107,7 +111,17 @@ function ready(datapoints) {
     .attr('stroke', d => colorScale(d.key))
     .attr('stroke-width', 2)
     .attr('fill', 'none')
+    .attr('visibility', function(d) {
+      if (d.key === 'BERMUDA') {
+        return 'hidden'
+      }
+      return 'visible'
+    })
     .lower()
+    .attr('opacity', 0)
+    .transition()
+    .duration(500)
+    .attr('opacity', 1)
 
   // Adding my circles
 
@@ -127,6 +141,12 @@ function ready(datapoints) {
       return yPositionScale(d.values[5].GiftAmount)
     })
     .attr('fill', d => colorScale(d.key))
+    .attr('visibility', function(d) {
+      if (d.key === 'BERMUDA') {
+        return 'hidden'
+      }
+      return 'visible'
+    })
 
   // Add your text on the right-hand side
 
@@ -157,6 +177,96 @@ function ready(datapoints) {
       }
       return 3
     })
+    .attr('visibility', function(d) {
+      if (d.key === 'BERMUDA') {
+        return 'hidden'
+      }
+      return 'visible'
+    })
+    .attr('opacity', 0)
+    .transition()
+    .duration(500)
+    .attr('opacity', 1)
+
+  //  })
+
+  d3.select('#bermuda').on('stepin', () => {
+    svg
+      .selectAll('.price-line')
+      .data(nested)
+      .enter()
+      .append('path')
+      .attr('class', 'price-line')
+      .attr('class', function(d) {
+        return d.key
+      })
+      .attr('d', d => {
+        // d.key on esim NYC ja d.values on noi kaikki datapoints
+        // console.log(d)
+        return line(d.values)
+      })
+      .attr('stroke', d => colorScale(d.key))
+      .attr('stroke-width', 2)
+      .attr('fill', 'none')
+      .lower()
+      .attr('opacity', 0)
+      .transition()
+      .duration(500)
+      .attr('opacity', 1)
+
+    svg
+      .selectAll('.region-label')
+      .data(nested)
+      .enter()
+      .append('text')
+      .attr('class', function(d) {
+        return d.key
+      })
+      // .attr('class', 'region-label')
+      .text(function(d) {
+        return d.key
+      })
+      .attr('x', width)
+      .attr('y', function(d) {
+        return yPositionScale(d.values[5].GiftAmount)
+      })
+      .attr('font-size', 12)
+      .attr('dx', 5)
+      .attr('dy', function(d) {
+        if (d.key === 'CHINA') {
+          return -2
+        }
+        if (d.key === 'SAUDI ARABIA') {
+          return 6
+        }
+        return 3
+      })
+      .attr('opacity', 0)
+      .transition()
+      .duration(500)
+      .attr('opacity', 1)
+
+    svg
+      .selectAll('.last-circle')
+      .data(nested)
+      .enter()
+      .append('circle')
+      .attr('class', function(d) {
+        return d.key
+      })
+      // .attr('class', 'last-circle')
+      .attr('r', 3)
+      .attr('cx', width)
+      .attr('cy', function(d) {
+        // console.log(d.values[5])
+        return yPositionScale(d.values[5].GiftAmount)
+      })
+      .attr('fill', d => colorScale(d.key))
+      .attr('opacity', 0)
+      .transition()
+      .duration(500)
+      .attr('opacity', 1)
+  })
 
   // Add your title
 
@@ -178,129 +288,138 @@ function ready(datapoints) {
     .attr('text-anchor', 'middle')
     .attr('font-size', 16)
 
-  // Bermuda-point
+  d3.select('#dots')
+    .on('stepin', () => {
+      // Bermuda-point
 
-  svg
-    .selectAll('.bermuda-circle')
-    .data(nested)
-    .enter()
-    .append('circle')
-    .attr('class', 'bermuda-circle')
-    // .attr('class', 'last-circle')
-    .attr('r', 8)
-    .attr('cx', function(d) {
-      return xPositionScale(d.values[4].datetime)
-    })
-    .attr('cy', function(d) {
-      return yPositionScale(d.values[4].GiftAmount)
-    })
-    .attr('fill', d => colorScale(d.key))
-    .attr('visibility', function(d) {
-      if (d.key === 'BERMUDA') {
-        return 'visible'
-      }
-      return 'hidden'
-    })
-    .on('mouseover', function(d) {
-      console.log('I got clicked')
-
-      d3.select('#info_bermuda').style('display', 'block')
-      d3.select('.bermuda-circle')
-        .attr('r', 10)
-        .attr('stroke', 'black')
-    })
-    .on('mouseout', function(d) {
-      d3.select('#info_bermuda').style('display', 'none')
-      d3.select('.bermuda-circle')
+      svg
+        .selectAll('.bermuda-circle')
+        .data(nested)
+        .enter()
+        .append('circle')
+        .attr('class', 'bermuda-circle')
+        // .attr('class', 'last-circle')
         .attr('r', 8)
-        .attr('stroke', 'none')
-    })
+        .attr('cx', function(d) {
+          return xPositionScale(d.values[4].datetime)
+        })
+        .attr('cy', function(d) {
+          return yPositionScale(d.values[4].GiftAmount)
+        })
+        .attr('fill', d => colorScale(d.key))
+        .attr('visibility', function(d) {
+          if (d.key === 'BERMUDA') {
+            return 'visible'
+          }
+          return 'hidden'
+        })
+        .on('mouseover', function(d) {
+          console.log('I got clicked')
 
-//QATAR-point 
-  svg
-    .selectAll('.qatar-circle')
-    .data(nested)
-    .enter()
-    .append('circle')
-    .attr('class', 'qatar-circle')
-    // .attr('class', 'last-circle')
-    .attr('r', 8)
-    .attr('cx', function(d) {
-      return xPositionScale(d.values[4].datetime)
-    })
-    .attr('cy', function(d) {
-      return yPositionScale(d.values[4].GiftAmount)
-    })
-    .attr('fill', d => colorScale(d.key))
-    .attr('visibility', function(d) {
-      if (d.key === 'QATAR') {
-        return 'visible'
-      }
-      return 'hidden'
-    })
-    .on('mouseover', function(d) {
-      console.log('I got clicked')
+          d3.select('#info_bermuda').style('display', 'block')
+          d3.select('.bermuda-circle')
+            .attr('r', 10)
+            .attr('stroke', 'black')
+        })
+        .on('mouseout', function(d) {
+          d3.select('#info_bermuda').style('display', 'none')
+          d3.select('.bermuda-circle')
+            .attr('r', 8)
+            .attr('stroke', 'none')
+        })
 
-      d3.select('#info_qatar').style('display', 'block')
-      d3.select(this)
-        .attr('r', 10)
-        .attr('stroke', 'black')
-    })
-    .on('mouseout', function(d) {
-      d3.select('#info_qatar').style('display', 'none')
-      d3.select(this)
+      // QATAR-point
+      svg
+        .selectAll('.qatar-circle')
+        .data(nested)
+        .enter()
+        .append('circle')
+        .attr('class', 'qatar-circle')
+        // .attr('class', 'last-circle')
         .attr('r', 8)
-        .attr('stroke', 'none')
-    })
+        .attr('cx', function(d) {
+          return xPositionScale(d.values[4].datetime)
+        })
+        .attr('cy', function(d) {
+          return yPositionScale(d.values[4].GiftAmount)
+        })
+        .attr('fill', d => colorScale(d.key))
+        .attr('visibility', function(d) {
+          if (d.key === 'QATAR') {
+            return 'visible'
+          }
+          return 'hidden'
+        })
+        .on('mouseover', function(d) {
+          console.log('I got clicked')
 
+          d3.select('#info_qatar').style('display', 'block')
+          d3.select(this)
+            .attr('r', 10)
+            .attr('stroke', 'black')
+        })
+        .on('mouseout', function(d) {
+          d3.select('#info_qatar').style('display', 'none')
+          d3.select(this)
+            .attr('r', 8)
+            .attr('stroke', 'none')
+        })
 
-  // ENGLAND-point
+      // ENGLAND-point
 
-  svg
-    .selectAll('.england-circle')
-    .data(nested)
-    .enter()
-    .append('circle')
-    .attr('class', function(d) {
-      return d.key
-    })
-    // .attr('class', 'last-circle')
-    .attr('r', 8)
-    .attr('cx', function(d) {
-      return xPositionScale(d.values[3].datetime)
-    })
-    .attr('cy', function(d) {
-      return yPositionScale(d.values[3].GiftAmount)
-    })
-    .attr('fill', d => colorScale(d.key))
-    .attr('visibility', function(d) {
-      if (d.key === 'ENGLAND') {
-        return 'visible'
-      }
-      return 'hidden'
-    })
-    .on('mouseover', function(d) {
-      console.log('I got clicked')
-
-      d3.select('#info_england').style('display', 'block')
-      d3.select(this)
-        .attr('r', 10)
-        .attr('stroke', 'black')
-    })
-    .on('mouseout', function(d) {
-      d3.select('#info_england').style('display', 'none')
-      d3.select(this)
+      svg
+        .selectAll('.england-circle')
+        .data(nested)
+        .enter()
+        .append('circle')
+        .attr('class', function(d) {
+          return d.key
+        })
+        // .attr('class', 'last-circle')
         .attr('r', 8)
-        .attr('stroke', 'none')
+        .attr('cx', function(d) {
+          return xPositionScale(d.values[3].datetime)
+        })
+        .attr('cy', function(d) {
+          return yPositionScale(d.values[3].GiftAmount)
+        })
+        .attr('fill', d => colorScale(d.key))
+        .attr('visibility', function(d) {
+          if (d.key === 'ENGLAND') {
+            return 'visible'
+          }
+          return 'hidden'
+        })
+        .on('mouseover', function(d) {
+          console.log('I got clicked')
+
+          d3.select('#info_england').style('display', 'block')
+          d3.select(this)
+            .attr('r', 10)
+            .attr('stroke', 'black')
+        })
+        .on('mouseout', function(d) {
+          d3.select('#info_england').style('display', 'none')
+          d3.select(this)
+            .attr('r', 8)
+            .attr('stroke', 'none')
+        })
+    })
+    .on('stepout', () => {
+      svg.selectAll('.england_circle')
+      .attr('visibility', function(d) {
+          if (d.key === 'ENGLAND') {
+            return 'hidden'
+          }
+         } )
     })
 
   // Add your axes
 
   var xAxis = d3
-  .axisBottom(xPositionScale)
-  .tickValues(d3.range(2012,2017.1))
-  .tickFormat(d=>d)
-
+    .axisBottom(xPositionScale)
+    .tickValues(d3.range(2012, 2017.1))
+    .tickFormat(d => d)
 
   svg
     .append('g')
@@ -310,16 +429,17 @@ function ready(datapoints) {
   // .call(xAxis.ticks(d3.timeYear))
 
   // console.log(xPositionScale.domain())
-  var yAxis = d3.axisLeft(yPositionScale)
- .ticks(7)
-  .tickFormat(function(d){
-    console.log(d)
-       if (+d === 700000000) {
-    return d/1000000 + ' millions' 
-   } else {
-        return d/1000000
+  var yAxis = d3
+    .axisLeft(yPositionScale)
+    .ticks(7)
+    .tickFormat(function(d) {
+      console.log(d)
+      if (+d === 700000000) {
+        return d / 1000000 + ' millions'
+      } else {
+        return d / 1000000
       }
-  })
+    })
 
   svg
     .append('g')
