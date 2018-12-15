@@ -21,41 +21,7 @@ var container = d3.select('#chart-3')
     .domain([0, 300000000])
     .range([height, 0])
 
-/*
-  var bar = d3
-  .rect()
-  .attr('fill', 'black')
-      .attr('x', 0)
-      .attr('y', function(d) {
-        return yPositionScale(d.Year)
-      })
-      .attr('width', function(d) {
-        return widthScale(d.GiftAmount)
-      })
-      .attr('height', yPositionScale.bandwidth())
 
-*/
-/*
-var xPositionScale = d3
-  .scaleLinear()
-  .domain([2012, 2017])
-  .range([0, width])
-var yPositionScale = d3
-  .scaleLinear()
-  .domain([0, 200000000])
-  .range([height, 0])
-
-// Create your line generator
-
-var line = d3
-  .line()
-  .x(function(d) {
-    return xPositionScale(d.year)
-  })
-  .y(function(d) {
-    return yPositionScale(d.GiftAmount)
-  })
-*/
 // Read in your data
 
 Promise.all([
@@ -125,19 +91,6 @@ function ready([datapoints]) {
       .attr('width', xPositionScale.bandwidth())
 
       
-      /*
-      .attr('fill', function(d) {
-        return colorScale(d['animal'])
-      })
-      */
-/*
-       svg
-        .append('path')
-        .datum(usa)
-        .attr('d', line)
-        .attr('stroke', 'grey')
-        .attr('fill', 'none')
-*/
 
  var ticks = [50000000,100000000,150000000,200000000,250000000,300000000]
  var tickLabels = [50,100,150,200,250,300]
@@ -155,11 +108,6 @@ if (+d === 300000000) {
         })
 
 
-        //.ticks(4)
-        //.tickFormat(d3.format(d/1000000))
-        
-        //.tickSize(-height)
-
     var xAxis = d3
         .axisBottom(xPositionScale)
       svg
@@ -168,11 +116,6 @@ if (+d === 300000000) {
         .attr('transform', 'translate(0,' + height + ')')
         .call(xAxis)
 
-  
-        //.tickValues([2012, 2013, 2014, 2015, 2016, 2017])
-        //.tickSize(-width)
-        //.ticks(6)
-        //.tickFormat(d3.format("$,d"))
 
 
       svg
@@ -206,4 +149,3 @@ if (+d === 300000000) {
     })
 }
 
-//export { xPositionScale, yPositionScale, line, width, height }

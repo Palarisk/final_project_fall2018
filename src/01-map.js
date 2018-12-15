@@ -18,7 +18,7 @@ var svg = d3
   .append('g')
   .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 
-// Create a time parser (see hints)
+// Create a time parser 
 
 let parseTime = d3.timeParse('%Y')
 
@@ -28,7 +28,7 @@ let xPositionScale = d3.scaleLinear().range([0, width])
 
 let yPositionScale = d3
   .scaleLinear()
-  // .domain([100, 355])
+
   .range([height, 0])
 
 let colorScale = d3
@@ -426,9 +426,9 @@ function ready(datapoints) {
     .attr('class', 'axis x-axis')
     .attr('transform', 'translate(0,' + height + ')')
     .call(xAxis)
-  // .call(xAxis.ticks(d3.timeYear))
 
-  // console.log(xPositionScale.domain())
+
+
   var yAxis = d3
     .axisLeft(yPositionScale)
     .ticks(7)
@@ -445,13 +445,4 @@ function ready(datapoints) {
     .append('g')
     .attr('class', 'axis y-axis')
     .call(yAxis)
-}
-export {
-  xPositionScale,
-  yPositionScale,
-  colorScale,
-  line,
-  width,
-  height,
-  parseTime
 }
